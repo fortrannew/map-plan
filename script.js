@@ -33,7 +33,7 @@
 
 class lcp_map_plan {
   constructor() {
-    this.img_marker_red='data:image/png;base64,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';
+    this.img_marker_red='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAIGNIUk0AAHolAACAgwAA+f8AAIDoAABSCAABFVgAADqXAAAXb9daH5AAAAI2SURBVHjapJY9aBVBFIW/XZLg4yVRMSm0s1ALUfAXgmATeETEn9iIYtDCLiBipSiksrESAgqKCBZaJESwEFEQxSRYBEkVsRBRFDEEU2gMJvqOzSwsw/xtfHB5u3vPnDM7e+fcyUTSbz2wE9gEdAFN4BvwFpgGvscIWiL5VqAB9AM9wAagBgj4BXwAxoERYCLIJH8cEUwJlBiPBXt8fK6HrYLhCgLlWBScTxFqE4ytUKQcV2NCtyME781yvhF8imAHfULHA4MeCPYJagabCToEhwTPA8u4zRaqm9na4AUzASJx2SP2yBY67QAtC/oTRIoYcnD8FewohNoETxygWxZRh+CS4JnBDwpaSvlM8NpTGHUEWwWzjiXbXCLpFIw7SEbNdihwxxyYV4K9CI4KmlZy0nqbK4FCOVnCrRHMWfkvgoHceFdmGcasdd8ImEtf6XoRmLfy7UB3nuap/KmQc/l0lhvntZNd1v1YQKicqwFrrfwCMIdgu2Ndfwg2WtY04vg+161vediBmRT0IFhlSjZGkglOCO4IbgoOOvaSqzKvCToLwFkH4LegUWHDXnBwNIvWUYBWe0xyXnAgQeScp/Sfukz1jAe8LLhhDDK3+tZ+wUPPuCXBbl+buB/YmEuCacELwUvBTKRNXAz1o7p53f9tfMMprbwuuLdCgaZx8aQzQxEDgncVRCYEvVUOJ+VoF5wy54iPpmsWxD/NRO6aysxDXFniAXILsMv8rzNjvwIzwBTwOUbwbwCFGT8V+HujSQAAAABJRU5ErkJggg==';
 //     // красная точка на карте
 // Uint8List imgPointRed = base64Decode(
 //   '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');
@@ -51,6 +51,8 @@ class lcp_map_plan {
   }
 
   init(obj_id){
+    this.marker={};
+    this.marker.active=-1;
     this.obj_id=obj_id;
     this.obj=this.get_obj(obj_id);
     this.canvas_id=this.obj_id + '_canvas';
@@ -105,30 +107,37 @@ class lcp_map_plan {
   }
 
   // добавление новой метки
-  add_marker(){
+  add_marker(x,y){
     if (typeof this.markers==='undefined'){
       this.markers=[];
     }
     if (typeof this.markers.length==='undefined'){
       this.markers.length=0;
     }
-    var num_marker=this.markers.length;
+    this.marker.active=this.markers.length;
+    var num_marker=this.marker.active;
     this.markers[num_marker]={};
     this.markers[num_marker].img_path=this.img_marker_red;
     this.markers[num_marker].img_id=this.obj_id + '_marker_red_img';
     let img = document.createElement('img');
     img.id = this.markers[num_marker].img_id;
-    // img.style = 'display:none;';
+    img.style = 'display:none;';
     img.src = this.markers[num_marker].img_path;
     this.obj.appendChild(img);
     this.markers[num_marker].img = this.get_obj(this.markers[num_marker].img_id);
-    this.markers[num_marker].pos_x=0;
-    this.markers[num_marker].pos_y=0;
     var self=this;
     img.onload = function() {
       self.markers[num_marker].img_width=this.width;
       self.markers[num_marker].img_height=this.height;
-      self.update_marker(self.markers[num_marker].img,self.pos_x,self.pos_y);
+      if (typeof x==='undefined'){
+        x=self.canvas.clientWidth/2-this.width/2;
+      }
+      if (typeof y==='undefined'){
+        y=self.canvas.clientHeight/2-this.height/2;
+      }
+      self.markers[num_marker].pos_x=x;
+      self.markers[num_marker].pos_y=y;
+      self.update_marker(self.markers[num_marker].img,x,y);
     };
     // this.add_move_map();
   }
@@ -136,11 +145,24 @@ class lcp_map_plan {
   // обновление фона изображения с новыми координатами (для перемещения)
   update_background(x,y){
     this.ctx.drawImage(this.img, x, y);
+    this.update_all_markers(x,y);
   }
 
   // обновление маркера с новыми координатами (для перемещения)
   update_marker(marker_obj,x,y){
-    // this.ctx.drawImage(marker_obj, x, y);
+    this.ctx.drawImage(marker_obj, x, y);
+  }
+
+  // обновление всех маркеров
+  update_all_markers(x,y){
+    for (var i=0;i<this.markers.length;i++){
+      this.update_marker(this.markers[i].img,x+this.markers[i].pos_x,y+this.markers[i].pos_y);
+    }
+  }
+
+  // получение координат маркеров, относительно карты
+  get_coordinate_marker_with_map_x(x){
+    return x+this.pos_x;
   }
 
   // добавление функций для перемещения карты с метками
