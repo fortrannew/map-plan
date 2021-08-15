@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://fortran-new.ru/lcp-panel/lcp-components/components/system/jquery/jquery/jquery1.10.2.min.js" charset="utf-8"></script>
+    <script src="script.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <!-- <img src="map.png" id="map_img">
+    <canvas id="map_plan" class="map_plan" width="600" height="350">Ваш браузер не поддерживает функции для работы с картой помещения!</canvas> -->
+    <div id="map_plan"></div>
+    <script>
+      map_plan.init('map_plan');
+      map_plan.add_background('map.png');
+      map_plan.add_marker();
+    </script>
+  </body>
+</html>
