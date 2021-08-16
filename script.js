@@ -2,6 +2,7 @@ class lcp_map_plan {
   constructor() {
     // красная точка на карте
     this.img_marker_red='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAIGNIUk0AAHolAACAgwAA+f8AAIDoAABSCAABFVgAADqXAAAXb9daH5AAAAI2SURBVHjapJY9aBVBFIW/XZLg4yVRMSm0s1ALUfAXgmATeETEn9iIYtDCLiBipSiksrESAgqKCBZaJESwEFEQxSRYBEkVsRBRFDEEU2gMJvqOzSwsw/xtfHB5u3vPnDM7e+fcyUTSbz2wE9gEdAFN4BvwFpgGvscIWiL5VqAB9AM9wAagBgj4BXwAxoERYCLIJH8cEUwJlBiPBXt8fK6HrYLhCgLlWBScTxFqE4ytUKQcV2NCtyME781yvhF8imAHfULHA4MeCPYJagabCToEhwTPA8u4zRaqm9na4AUzASJx2SP2yBY67QAtC/oTRIoYcnD8FewohNoETxygWxZRh+CS4JnBDwpaSvlM8NpTGHUEWwWzjiXbXCLpFIw7SEbNdihwxxyYV4K9CI4KmlZy0nqbK4FCOVnCrRHMWfkvgoHceFdmGcasdd8ImEtf6XoRmLfy7UB3nuap/KmQc/l0lhvntZNd1v1YQKicqwFrrfwCMIdgu2Ndfwg2WtY04vg+161vediBmRT0IFhlSjZGkglOCO4IbgoOOvaSqzKvCToLwFkH4LegUWHDXnBwNIvWUYBWe0xyXnAgQeScp/Sfukz1jAe8LLhhDDK3+tZ+wUPPuCXBbl+buB/YmEuCacELwUvBTKRNXAz1o7p53f9tfMMprbwuuLdCgaZx8aQzQxEDgncVRCYEvVUOJ+VoF5wy54iPpmsWxD/NRO6aysxDXFniAXILsMv8rzNjvwIzwBTwOUbwbwCFGT8V+HujSQAAAABJRU5ErkJggg==';
+    this.scale_step=0.1;
   }
 
   init(obj_id){
@@ -13,28 +14,77 @@ class lcp_map_plan {
     }
     this.obj_id=obj_id;
     this.obj=this.get_obj(obj_id);
-    this.canvas_id=this.obj_id + '_canvas';
 
+
+
+
+    // zoom
+    this.zoom=1;
+    this.zoom_id=this.obj_id + '_zoom';
+    let div = document.createElement('div');
+    div.id = this.zoom_id;
+    this.obj.appendChild(div);
+    this.zoom_obj = this.get_obj(this.zoom_id);
+
+
+
+    // canvas
+    this.canvas_id=this.obj_id + '_canvas';
     let canvas = document.createElement('canvas');
     canvas.id = this.canvas_id;
     canvas.innerHTML = 'Ваш браузер не поддерживает функции для работы с картой помещения!';
     canvas.width = '600';
     canvas.height = '350';
-    this.obj.appendChild(canvas);
-
+    this.zoom_obj.appendChild(canvas); // canvas add in zoom
     this.canvas = this.get_obj(this.canvas_id);
+    this.ctx = this.canvas.getContext('2d');
 
+
+
+
+    // возможность масштабировать
+    var self=this;
+    this.addOnWheel(this.canvas, function(e) {
+      var delta = e.deltaY || e.detail || e.wheelDelta;
+      var zoom=self.zoom;
+      if (delta > 0){
+        zoom -= self.scale_step;
+      } else {
+        zoom += self.scale_step;
+      }
+      if (zoom>16){
+        zoom=16;
+      }
+      if (zoom<0.1){
+        zoom=0.1;
+      }
+      self.zoom=zoom;
+      self.clear_all();
+      self.update_background(self.pos_x,self.pos_y);
+      self.update_all_markers();
+      // отменим прокрутку
+      e.preventDefault();
+    });
+
+
+
+
+    
+    // style
     let style = document.createElement('style');
     style.media = 'screen';
     style.innerHTML = '';
     style.innerHTML += '#'+this.canvas_id+'{';
-    style.innerHTML += 'border: 1px solid #cccccc;';
     style.innerHTML += 'width:600px;';
     style.innerHTML += 'height:350px;';
     style.innerHTML += '}';
+    style.innerHTML += '#'+this.zoom_id+'{';
+    style.innerHTML += 'border: 1px solid #cccccc;';
+    style.innerHTML += 'max-width:600px;';
+    style.innerHTML += 'max-height:350px;';
+    style.innerHTML += 'overflow:hidden;';
+    style.innerHTML += '}';
     this.obj.appendChild(style);
-
-    this.ctx = this.canvas.getContext('2d');
   }
 
   get_obj(obj_id){
@@ -60,8 +110,9 @@ class lcp_map_plan {
       self.img_width=this.width;
       self.img_height=this.height;
       self.update_background(self.pos_x,self.pos_y);
-      self.update_all_markers(self.pos_x,self.pos_y);
-    };
+      self.update_all_markers();
+      console.log('back');
+  };
     this.add_move_map();
   }
 
@@ -78,25 +129,39 @@ class lcp_map_plan {
     img.src = this.markers[num_marker].img_path;
     this.obj.appendChild(img);
     this.markers[num_marker].img = this.get_obj(this.markers[num_marker].img_id);
+    if (typeof x==='undefined'){
+      x=this.zoom_obj.offsetWidth/2;
+    }
+    if (typeof y==='undefined'){
+      y=this.zoom_obj.offsetHeight/2;
+    }
+    this.markers[num_marker].pos_x=x+this.pos_x;
+    this.markers[num_marker].pos_y=y+this.pos_y;
     var self=this;
     img.onload = function() {
       self.markers[num_marker].img_width=this.width;
       self.markers[num_marker].img_height=this.height;
-      if (typeof x==='undefined'){
-        x=self.canvas.clientWidth/2-this.width/2;
-      }
-      if (typeof y==='undefined'){
-        y=self.canvas.clientHeight/2-this.height/2;
-      }
-      self.markers[num_marker].pos_x=x;
-      self.markers[num_marker].pos_y=y;
-      self.update_marker(self.markers[num_marker].img,x,y);
-    };
+      // self.update_marker(self.markers[num_marker].img,self.markers[num_marker].pos_x,self.markers[num_marker].pos_y);
+      self.update_all_markers();
+      console.log('metka');
+  };
+    
+  }
+
+  // установить новые координаты для карты (переместится карта и маркеры)
+  set_pos(x,y){
+    this.pos_x=x;
+    for (var i=0;i<this.markers.length;i++){
+      this.markers[i].pos_x=this.markers[i].pos_x+x;
+    }
+    this.update_background(this.pos_x,this.pos_y);
+    this.update_all_markers();
   }
 
   // обновление фона изображения с новыми координатами (для перемещения)
   update_background(x,y){
-    this.ctx.drawImage(this.img, x, y);
+    this.clear_all();
+    this.ctx.drawImage(this.img, x, y,this.img_width*this.zoom,this.img_height*this.zoom);
   }
 
   // обновление маркера с новыми координатами (для перемещения)
@@ -110,15 +175,16 @@ class lcp_map_plan {
     var smesch_x=0;
     }
     for (var i=0;i<this.markers.length;i++){
+      // console.log(smesch_x+this.markers[i].pos_x,this.markers[i].pos_y);
       this.update_marker(this.markers[i].img,smesch_x+this.markers[i].pos_x,this.markers[i].pos_y);
     }
   }
 
-  // получение координат маркеров, относительно карты
-  get_coordinate_marker_with_map_x(x){
-    return x+this.pos_x;
+  // очистить весь фон
+  clear_all(){
+    this.ctx.clearRect(0,0,this.zoom_obj.offsetWidth,this.zoom_obj.offsetHeight);
   }
-
+  
   // добавление функций для перемещения карты с метками
   add_move_map(){
     var self=this;
@@ -153,7 +219,7 @@ class lcp_map_plan {
       self.canvas.onmousemove = function(event){
         mouse_x = event.offsetX;
         new_x=mouse_x-smesch_x;
-        self.ctx.clearRect(0,0,600,350);
+        self.clear_all();
         if (move_marker_only==true){
           self.update_background(self.pos_x,self.pos_y);
           for (var i=0;i<self.markers.length;i++){
@@ -212,7 +278,7 @@ class lcp_map_plan {
     var mouse_x = event.offsetX;
     var res=false;
     for (var i=0;i<this.markers.length;i++){
-      if ((mouse_x+self.pos_x>=self.markers[i].pos_x+self.pos_x) && (mouse_x+self.pos_x<=(self.markers[i].pos_x+self.markers[i].img_width)+self.pos_x)){
+      if ((mouse_x+self.pos_x>=self.markers[i].pos_x*this.zoom+self.pos_x*this.zoom) && (mouse_x+self.pos_x<=(self.markers[i].pos_x*this.zoom+self.markers[i].img_width)+self.pos_x*this.zoom)){
         res=i;
         break;
       } else {
@@ -224,6 +290,26 @@ class lcp_map_plan {
 
 
 
+
+
+
+  // общее событие для всех прокруток мыши
+  addOnWheel(elem, handler) {
+    if (elem.addEventListener) {
+      if ('onwheel' in document) {
+        // IE9+, FF17+
+        elem.addEventListener("wheel", handler);
+      } else if ('onmousewheel' in document) {
+        // устаревший вариант события
+        elem.addEventListener("mousewheel", handler);
+      } else {
+        // 3.5 <= Firefox < 17, более старое событие DOMMouseScroll пропустим
+        elem.addEventListener("MozMousePixelScroll", handler);
+      }
+    } else { // IE8-
+      text.attachEvent("onmousewheel", handler);
+    }
+  }
 
 }
 
