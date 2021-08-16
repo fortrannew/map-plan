@@ -3,6 +3,7 @@ class lcp_map_plan {
     // красная точка на карте
     this.img_marker_red='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAIGNIUk0AAHolAACAgwAA+f8AAIDoAABSCAABFVgAADqXAAAXb9daH5AAAAI2SURBVHjapJY9aBVBFIW/XZLg4yVRMSm0s1ALUfAXgmATeETEn9iIYtDCLiBipSiksrESAgqKCBZaJESwEFEQxSRYBEkVsRBRFDEEU2gMJvqOzSwsw/xtfHB5u3vPnDM7e+fcyUTSbz2wE9gEdAFN4BvwFpgGvscIWiL5VqAB9AM9wAagBgj4BXwAxoERYCLIJH8cEUwJlBiPBXt8fK6HrYLhCgLlWBScTxFqE4ytUKQcV2NCtyME781yvhF8imAHfULHA4MeCPYJagabCToEhwTPA8u4zRaqm9na4AUzASJx2SP2yBY67QAtC/oTRIoYcnD8FewohNoETxygWxZRh+CS4JnBDwpaSvlM8NpTGHUEWwWzjiXbXCLpFIw7SEbNdihwxxyYV4K9CI4KmlZy0nqbK4FCOVnCrRHMWfkvgoHceFdmGcasdd8ImEtf6XoRmLfy7UB3nuap/KmQc/l0lhvntZNd1v1YQKicqwFrrfwCMIdgu2Ndfwg2WtY04vg+161vediBmRT0IFhlSjZGkglOCO4IbgoOOvaSqzKvCToLwFkH4LegUWHDXnBwNIvWUYBWe0xyXnAgQeScp/Sfukz1jAe8LLhhDDK3+tZ+wUPPuCXBbl+buB/YmEuCacELwUvBTKRNXAz1o7p53f9tfMMprbwuuLdCgaZx8aQzQxEDgncVRCYEvVUOJ+VoF5wy54iPpmsWxD/NRO6aysxDXFniAXILsMv8rzNjvwIzwBTwOUbwbwCFGT8V+HujSQAAAABJRU5ErkJggg==';
     this.scale_step=0.1;
+    this.scale_max=5;
   }
 
   init(obj_id){
@@ -52,16 +53,18 @@ class lcp_map_plan {
       } else {
         zoom += self.scale_step;
       }
-      if (zoom>16){
-        zoom=16;
+      if (zoom>self.scale_max){
+        zoom=self.scale_max;
       }
       if (zoom<0.1){
         zoom=0.1;
       }
+      console.log(zoom);
       self.zoom=zoom;
       self.clear_all();
+      self.set_pos_markers();
       self.update_background(self.pos_x,self.pos_y);
-      self.update_all_markers();
+      self.update_all_zoom_markers();
       // отменим прокрутку
       e.preventDefault();
     });
@@ -107,8 +110,8 @@ class lcp_map_plan {
     this.pos_y=0;
     var self=this;
     img.onload = function() {
-      self.img_width=this.width;
-      self.img_height=this.height;
+      self.img_width=this.width*5;
+      self.img_height=this.height*5;
       self.update_background(self.pos_x,self.pos_y);
       self.update_all_markers();
       console.log('back');
@@ -135,8 +138,14 @@ class lcp_map_plan {
     if (typeof y==='undefined'){
       y=this.zoom_obj.offsetHeight/2;
     }
-    this.markers[num_marker].pos_x=x+this.pos_x;
-    this.markers[num_marker].pos_y=y+this.pos_y;
+    
+    this.markers[num_marker].pos_x_original=x;
+    this.markers[num_marker].pos_y_original=y;
+                                            
+
+                                       
+    this.set_pos_markers();
+
     var self=this;
     img.onload = function() {
       self.markers[num_marker].img_width=this.width;
@@ -146,6 +155,13 @@ class lcp_map_plan {
       console.log('metka');
   };
     
+  }
+
+
+
+  // получить коэффициент увеличения
+  zoom_coefficient(val_original){
+    return val_original*this.zoom/this.scale_max;
   }
 
   // установить новые координаты для карты (переместится карта и маркеры)
@@ -158,10 +174,17 @@ class lcp_map_plan {
     this.update_all_markers();
   }
 
+  set_pos_markers(){
+    for (var i = 0; i < this.markers.length; i++) {
+      this.markers[i].pos_x=this.zoom_coefficient(this.markers[i].pos_x_original)+this.zoom_coefficient(this.pos_x);
+      this.markers[i].pos_y=this.zoom_coefficient(this.markers[i].pos_y_original)+this.zoom_coefficient(this.pos_y);
+    }
+  }
+
   // обновление фона изображения с новыми координатами (для перемещения)
   update_background(x,y){
     this.clear_all();
-    this.ctx.drawImage(this.img, x, y,this.img_width*this.zoom,this.img_height*this.zoom);
+    this.ctx.drawImage(this.img, x, y,this.zoom_coefficient(this.img_width),this.zoom_coefficient(this.img_height));
   }
 
   // обновление маркера с новыми координатами (для перемещения)
@@ -172,12 +195,21 @@ class lcp_map_plan {
   // обновление всех маркеров
   update_all_markers(smesch_x,smesch_y){
     if (typeof smesch_x==='undefined'){
-    var smesch_x=0;
+      var smesch_x=0;
     }
     for (var i=0;i<this.markers.length;i++){
       // console.log(smesch_x+this.markers[i].pos_x,this.markers[i].pos_y);
       this.update_marker(this.markers[i].img,smesch_x+this.markers[i].pos_x,this.markers[i].pos_y);
     }
+  }
+
+  update_all_zoom_markers(){
+    for (var i=0;i<this.markers.length;i++){
+      this.markers[i].pos_x=this.markers[i].pos_x*this.zoom;
+      this.markers[i].pos_y=this.markers[i].pos_y*this.zoom;
+      this.update_marker(this.markers[i].img,this.markers[i].pos_x,this.markers[i].pos_y);
+    }
+    // update_all_markers();
   }
 
   // очистить весь фон
