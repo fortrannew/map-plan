@@ -1,70 +1,69 @@
 class lcp_map_plan {
   constructor() {
     // красная точка на карте
-    this.img_marker_red='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAIGNIUk0AAHolAACAgwAA+f8AAIDoAABSCAABFVgAADqXAAAXb9daH5AAAAI2SURBVHjapJY9aBVBFIW/XZLg4yVRMSm0s1ALUfAXgmATeETEn9iIYtDCLiBipSiksrESAgqKCBZaJESwEFEQxSRYBEkVsRBRFDEEU2gMJvqOzSwsw/xtfHB5u3vPnDM7e+fcyUTSbz2wE9gEdAFN4BvwFpgGvscIWiL5VqAB9AM9wAagBgj4BXwAxoERYCLIJH8cEUwJlBiPBXt8fK6HrYLhCgLlWBScTxFqE4ytUKQcV2NCtyME781yvhF8imAHfULHA4MeCPYJagabCToEhwTPA8u4zRaqm9na4AUzASJx2SP2yBY67QAtC/oTRIoYcnD8FewohNoETxygWxZRh+CS4JnBDwpaSvlM8NpTGHUEWwWzjiXbXCLpFIw7SEbNdihwxxyYV4K9CI4KmlZy0nqbK4FCOVnCrRHMWfkvgoHceFdmGcasdd8ImEtf6XoRmLfy7UB3nuap/KmQc/l0lhvntZNd1v1YQKicqwFrrfwCMIdgu2Ndfwg2WtY04vg+161vediBmRT0IFhlSjZGkglOCO4IbgoOOvaSqzKvCToLwFkH4LegUWHDXnBwNIvWUYBWe0xyXnAgQeScp/Sfukz1jAe8LLhhDDK3+tZ+wUPPuCXBbl+buB/YmEuCacELwUvBTKRNXAz1o7p53f9tfMMprbwuuLdCgaZx8aQzQxEDgncVRCYEvVUOJ+VoF5wy54iPpmsWxD/NRO6aysxDXFniAXILsMv8rzNjvwIzwBTwOUbwbwCFGT8V+HujSQAAAABJRU5ErkJggg==';
-    this.scale_step=0.1;
-    this.scale_max=5;
+    this.img_marker_red = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAIGNIUk0AAHolAACAgwAA+f8AAIDoAABSCAABFVgAADqXAAAXb9daH5AAAAI2SURBVHjapJY9aBVBFIW/XZLg4yVRMSm0s1ALUfAXgmATeETEn9iIYtDCLiBipSiksrESAgqKCBZaJESwEFEQxSRYBEkVsRBRFDEEU2gMJvqOzSwsw/xtfHB5u3vPnDM7e+fcyUTSbz2wE9gEdAFN4BvwFpgGvscIWiL5VqAB9AM9wAagBgj4BXwAxoERYCLIJH8cEUwJlBiPBXt8fK6HrYLhCgLlWBScTxFqE4ytUKQcV2NCtyME781yvhF8imAHfULHA4MeCPYJagabCToEhwTPA8u4zRaqm9na4AUzASJx2SP2yBY67QAtC/oTRIoYcnD8FewohNoETxygWxZRh+CS4JnBDwpaSvlM8NpTGHUEWwWzjiXbXCLpFIw7SEbNdihwxxyYV4K9CI4KmlZy0nqbK4FCOVnCrRHMWfkvgoHceFdmGcasdd8ImEtf6XoRmLfy7UB3nuap/KmQc/l0lhvntZNd1v1YQKicqwFrrfwCMIdgu2Ndfwg2WtY04vg+161vediBmRT0IFhlSjZGkglOCO4IbgoOOvaSqzKvCToLwFkH4LegUWHDXnBwNIvWUYBWe0xyXnAgQeScp/Sfukz1jAe8LLhhDDK3+tZ+wUPPuCXBbl+buB/YmEuCacELwUvBTKRNXAz1o7p53f9tfMMprbwuuLdCgaZx8aQzQxEDgncVRCYEvVUOJ+VoF5wy54iPpmsWxD/NRO6aysxDXFniAXILsMv8rzNjvwIzwBTwOUbwbwCFGT8V+HujSQAAAABJRU5ErkJggg==';
+    this.scale_step = 0.1;
+    this.scale_max = 5;
+    this.zoom = 0.5;
+    this.pos_x_orig = 0;
+    this.pos_y_orig = 0;
+    this.width_orig = 0;
+    this.height_orig = 0;
+    this.marker = new lcp_list_marker(this);
   }
 
-  init(obj_id){
-    this.marker={};
-    this.marker.active=-1;
-    this.markers=[];
-    if (typeof this.markers.length==='undefined'){
-      this.markers.length=0;
-    }
-    this.obj_id=obj_id;
-    this.obj=this.get_obj(obj_id);
 
 
 
 
-    // zoom
-    this.zoom=1;
-    this.zoom_id=this.obj_id + '_zoom';
-    let div = document.createElement('div');
-    div.id = this.zoom_id;
-    this.obj.appendChild(div);
-    this.zoom_obj = this.get_obj(this.zoom_id);
+
+
+
+
+
+  init(obj_id) {
+    var self = this;
+    self.obj_id = obj_id;
+    self.obj = self.get_obj(self.obj_id);
+
 
 
 
     // canvas
-    this.canvas_id=this.obj_id + '_canvas';
+    self.canvas_id = self.obj_id + '_canvas';
     let canvas = document.createElement('canvas');
-    canvas.id = this.canvas_id;
+    canvas.id = self.canvas_id;
     canvas.innerHTML = 'Ваш браузер не поддерживает функции для работы с картой помещения!';
-    canvas.width = '600';
-    canvas.height = '350';
-    this.zoom_obj.appendChild(canvas); // canvas add in zoom
-    this.canvas = this.get_obj(this.canvas_id);
-    this.ctx = this.canvas.getContext('2d');
-
+    canvas.width = self.obj.clientWidth;
+    canvas.height = self.obj.clientHeight;
+    self.obj.appendChild(canvas);
+    self.canvas = self.get_obj(self.canvas_id);
+    self.ctx = self.canvas.getContext('2d');
+    self.canvas_width = canvas.width;
+    self.canvas_height = canvas.height;
 
 
 
     // возможность масштабировать
-    var self=this;
-    this.addOnWheel(this.canvas, function(e) {
+    self.addOnWheel(self.canvas, function (e) {
       var delta = e.deltaY || e.detail || e.wheelDelta;
-      var zoom=self.zoom;
-      if (delta > 0){
+      var zoom = self.zoom;
+      var mouse_x = e.offsetX;
+      var mouse_y = e.offsetY;
+      if (delta > 0) {
         zoom -= self.scale_step;
       } else {
         zoom += self.scale_step;
       }
-      if (zoom>self.scale_max){
-        zoom=self.scale_max;
+      if (zoom > self.scale_max) {
+        zoom = self.scale_max;
       }
-      if (zoom<0.1){
-        zoom=0.1;
+      if (zoom < 0.1) {
+        zoom = 0.1;
       }
-      console.log(zoom);
-      self.zoom=zoom;
-      self.clear_all();
-      self.set_pos_markers();
-      self.update_background(self.pos_x,self.pos_y);
-      self.update_all_zoom_markers();
+      // console.log(zoom);
+      self.zoom = zoom;
+      self.repaint();
       // отменим прокрутку
       e.preventDefault();
     });
@@ -72,220 +71,237 @@ class lcp_map_plan {
 
 
 
-    
     // style
     let style = document.createElement('style');
     style.media = 'screen';
     style.innerHTML = '';
-    style.innerHTML += '#'+this.canvas_id+'{';
-    style.innerHTML += 'width:600px;';
-    style.innerHTML += 'height:350px;';
-    style.innerHTML += '}';
-    style.innerHTML += '#'+this.zoom_id+'{';
+    style.innerHTML += '#' + self.canvas_id + '{';
     style.innerHTML += 'border: 1px solid #cccccc;';
-    style.innerHTML += 'max-width:600px;';
-    style.innerHTML += 'max-height:350px;';
-    style.innerHTML += 'overflow:hidden;';
+    style.innerHTML += 'width:' + self.canvas_width + 'px;';
+    style.innerHTML += 'height:' + self.canvas_height + 'px;';
     style.innerHTML += '}';
-    this.obj.appendChild(style);
+    self.obj.appendChild(style);
   }
 
-  get_obj(obj_id){
+
+
+
+
+
+
+
+
+
+
+
+  // функция для получения объекта из идентификатора
+  get_obj(obj_id) {
     return document.getElementById(obj_id);
   }
 
 
 
   // добавление фона изображения (path - string)
-  add_background(path){
-    this.img_path=path;
-    this.img_id=this.obj_id + '_img';
+  add_background(path) {
+    var self = this;
+    self.img_path = path;
+    self.img_id = self.obj_id + '_img';
     let img = document.createElement('img');
-    img.id = this.img_id;
+    img.id = self.img_id;
     img.style = 'display:none;';
-    img.src = this.img_path;
-    this.obj.appendChild(img);
-    this.img = this.get_obj(this.img_id);
-    this.pos_x=0;
-    this.pos_y=0;
-    var self=this;
-    img.onload = function() {
-      self.img_width=this.width*5;
-      self.img_height=this.height*5;
-      self.update_background(self.pos_x,self.pos_y);
-      self.update_all_markers();
+    img.src = self.img_path;
+    self.obj.appendChild(img);
+    self.img = self.get_obj(self.img_id);
+    self.pos_x_orig = 0;
+    self.pos_y_orig = 0;
+
+    img.onload = function () {
+      self.width_orig = this.width * self.scale_max;
+      self.height_orig = this.height * self.scale_max;
+      self.repaint();
+      self.add_move();
       console.log('back');
-  };
-    this.add_move_map();
-  }
-
-  // добавление новой метки
-  add_marker(x,y){
-    this.marker.active=this.markers.length;
-    var num_marker=this.marker.active;
-    this.markers[num_marker]={};
-    this.markers[num_marker].img_path=this.img_marker_red;
-    this.markers[num_marker].img_id=this.obj_id + '_marker_red_img';
-    let img = document.createElement('img');
-    img.id = this.markers[num_marker].img_id;
-    img.style = 'display:none;';
-    img.src = this.markers[num_marker].img_path;
-    this.obj.appendChild(img);
-    this.markers[num_marker].img = this.get_obj(this.markers[num_marker].img_id);
-    if (typeof x==='undefined'){
-      x=this.zoom_obj.offsetWidth/2;
-    }
-    if (typeof y==='undefined'){
-      y=this.zoom_obj.offsetHeight/2;
-    }
-    
-    this.markers[num_marker].pos_x_original=x;
-    this.markers[num_marker].pos_y_original=y;
-                                            
-
-                                       
-    this.set_pos_markers();
-
-    var self=this;
-    img.onload = function() {
-      self.markers[num_marker].img_width=this.width;
-      self.markers[num_marker].img_height=this.height;
-      // self.update_marker(self.markers[num_marker].img,self.markers[num_marker].pos_x,self.markers[num_marker].pos_y);
-      self.update_all_markers();
-      console.log('metka');
-  };
-    
+    };
   }
 
 
 
   // получить коэффициент увеличения
-  zoom_coefficient(val_original){
-    return val_original*this.zoom/this.scale_max;
+  zoom_coefficient(val_original) {
+    var self = this;
+    return val_original * self.zoom / self.scale_max;
   }
 
-  // установить новые координаты для карты (переместится карта и маркеры)
-  set_pos(x,y){
-    this.pos_x=x;
-    for (var i=0;i<this.markers.length;i++){
-      this.markers[i].pos_x=this.markers[i].pos_x+x;
+  // получить оригинальный коэффициент увеличения
+  zoom_coefficient_orig(val_current) {
+    var self = this;
+    return (val_current * self.scale_max) / self.zoom;
+  }
+
+
+  // получение новых размеров исходя из оригинальных с учетом коэффициента масштабирования
+  get width() {
+    var self = this;
+    return self.zoom_coefficient(self.width_orig);
+  }
+
+
+  // получение новых размеров исходя из оригинальных с учетом коэффициента масштабирования
+  get height() {
+    var self = this;
+    return self.zoom_coefficient(self.height_orig);
+  }
+
+
+  // получение новых позиций исходя из оригинальных с учетом коэффициента масштабирования
+  get pos_x() {
+    var self = this;
+    return self.zoom_coefficient(self.pos_x_orig);
+  }
+
+  set pos_x(x) {
+    var self = this;
+    var pos_x_orig_old = self.pos_x_orig;
+    var res = self.zoom_coefficient_orig(x);
+    var diff = res - pos_x_orig_old;
+    for (var i = 0; i < self.marker.length; i++) {
+      self.marker.items[i].pos_x_orig = self.marker.items[i].pos_x_orig + diff;
     }
-    this.update_background(this.pos_x,this.pos_y);
-    this.update_all_markers();
+    self.pos_x_orig = res;
   }
 
-  set_pos_markers(){
-    for (var i = 0; i < this.markers.length; i++) {
-      this.markers[i].pos_x=this.zoom_coefficient(this.markers[i].pos_x_original)+this.zoom_coefficient(this.pos_x);
-      this.markers[i].pos_y=this.zoom_coefficient(this.markers[i].pos_y_original)+this.zoom_coefficient(this.pos_y);
+
+  // получение новых позиций исходя из оригинальных с учетом коэффициента масштабирования
+  get pos_y() {
+    var self = this;
+    return self.zoom_coefficient(self.pos_y_orig);
+  }
+
+  set pos_y(x) {
+    var self = this;
+    var pos_y_orig_old = self.pos_y_orig;
+    var res = self.zoom_coefficient_orig(x);
+    var diff = res - pos_y_orig_old;
+    for (var i = 0; i < self.marker.length; i++) {
+      self.marker.items[i].pos_y_orig = self.marker.items[i].pos_y_orig + diff;
     }
+    self.pos_y_orig = res;
   }
 
-  // обновление фона изображения с новыми координатами (для перемещения)
-  update_background(x,y){
-    this.clear_all();
-    this.ctx.drawImage(this.img, x, y,this.zoom_coefficient(this.img_width),this.zoom_coefficient(this.img_height));
+
+  // перерисовать фон изображения
+  repaint_background() {
+    var self = this;
+    self.clear_all();
+    self.ctx.drawImage(self.img, self.pos_x, self.pos_y, self.width, self.height);
   }
 
-  // обновление маркера с новыми координатами (для перемещения)
-  update_marker(marker_obj,x,y){
-    this.ctx.drawImage(marker_obj, x, y);
+  repaint() {
+    var self = this;
+    self.repaint_background();
+    self.marker.repaint_all_marker();
   }
 
-  // обновление всех маркеров
-  update_all_markers(smesch_x,smesch_y){
-    if (typeof smesch_x==='undefined'){
-      var smesch_x=0;
-    }
-    for (var i=0;i<this.markers.length;i++){
-      // console.log(smesch_x+this.markers[i].pos_x,this.markers[i].pos_y);
-      this.update_marker(this.markers[i].img,smesch_x+this.markers[i].pos_x,this.markers[i].pos_y);
-    }
+
+
+
+
+
+
+  // // получение центра карты исходя из оригинальных размеров с учетом коэффициента масштабирования
+  get center_x() {
+    var self = this;
+    return self.canvas_width / 2 + self.pos_x;
   }
 
-  update_all_zoom_markers(){
-    for (var i=0;i<this.markers.length;i++){
-      this.markers[i].pos_x=this.markers[i].pos_x*this.zoom;
-      this.markers[i].pos_y=this.markers[i].pos_y*this.zoom;
-      this.update_marker(this.markers[i].img,this.markers[i].pos_x,this.markers[i].pos_y);
-    }
-    // update_all_markers();
+  // установить центр карты исходя из оригинальных размеров без учета коэффициента масштабирования с визуальным перемещением
+  set center_x(x) {
+    var self = this;
+    self.pos_x = x - self.canvas_width / 2;
+    self.repaint_background();
+    self.marker.repaint_all_marker();
   }
 
-  // очистить весь фон
-  clear_all(){
-    this.ctx.clearRect(0,0,this.zoom_obj.offsetWidth,this.zoom_obj.offsetHeight);
-  }
-  
-  // добавление функций для перемещения карты с метками
-  add_move_map(){
-    var self=this;
+
+  add_move() {
+    var self = this;
     var new_x;
+    var new_y;
     var smesch_x;
+    var smesch_y;
     var last_pos_x;
+    var last_pos_y;
     var last_pos_x_markers = [];
+    var last_pos_y_markers = [];
     var mouse_x;
-    var move_marker_only=false;
-    var mouse_down=false;
+    var mouse_y;
+    var move_marker_only = false;
+    var mouse_down = false;
 
-    self.canvas.onmousemove = function(event){self.canvas_mouse_move(event,self);};
+    self.canvas.onmousemove = function (event) { self.canvas_mouse_move(event, self); };
 
-      self.canvas.onmousedown = function(event){
+    self.canvas.onmousedown = function (event) {
       new_x = 0;
+      new_y = 0;
       mouse_x = event.offsetX;
+      mouse_y = event.offsetY;
       smesch_x = mouse_x;
+      smesch_y = mouse_y;
       mouse_down = true;
 
       // определение нажатия на маркер. если нажат, то move_marker_only=true
-      var hover_marker_index = self.hover_marker_index(event,self);
-      move_marker_only=hover_marker_index===false?false:true;
-      self.marker.active = hover_marker_index===false?'-1':hover_marker_index;
-      console.log('move_marker_only',move_marker_only);
+      var hover_marker_index = self.hover_marker_index(event, self);
+      move_marker_only = hover_marker_index === false ? false : true;
+      self.marker.active = hover_marker_index === false ? '-1' : hover_marker_index;
+      console.log('move_marker_only', move_marker_only);
 
       // сохранить предыдущую позицию всех маркеров и карты
-      for (var i=0;i<self.markers.length;i++){
-        last_pos_x_markers[i] = self.markers[i].pos_x;
+      for (var i = 0; i < self.marker.length; i++) {
+        last_pos_x_markers[i] = self.marker.items[i].pos_x;
+        last_pos_y_markers[i] = self.marker.items[i].pos_y;
       }
       last_pos_x = self.pos_x;
-      
-      self.canvas.onmousemove = function(event){
+      last_pos_y = self.pos_y;
+
+      self.canvas.onmousemove = function (event) {
         mouse_x = event.offsetX;
-        new_x=mouse_x-smesch_x;
-        self.clear_all();
-        if (move_marker_only==true){
-          self.update_background(self.pos_x,self.pos_y);
-          for (var i=0;i<self.markers.length;i++){
-            if (i==self.marker.active){
-              self.update_marker(self.markers[self.marker.active].img,last_pos_x_markers[self.marker.active]+new_x,self.markers[self.marker.active].pos_y);
-            } else {
-              self.update_marker(self.markers[i].img,self.markers[i].pos_x,self.markers[self.marker.active].pos_y);
+        mouse_y = event.offsetY;
+        new_x = mouse_x - smesch_x;
+        new_y = mouse_y - smesch_y;
+        if (move_marker_only == true) {
+          for (var i = 0; i < self.marker.length; i++) {
+            if (i == self.marker.active) {
+              self.marker.items[self.marker.active].pos_x=last_pos_x_markers[self.marker.active] + new_x;
+              self.marker.items[self.marker.active].pos_y=last_pos_y_markers[self.marker.active] + new_y;
             }
+          self.repaint();
           }
         } else {
-          self.update_background(last_pos_x+new_x,self.pos_y);
-          self.update_all_markers(new_x,self.pos_y);
+          self.pos_x=last_pos_x + new_x;
+          self.pos_y=last_pos_y + new_y;
+          self.repaint();
         }
       }
-      self.canvas.onmouseup = function(event){
+      self.canvas.onmouseup = function (event) {
         mouse_down = false;
-        self.canvas.onmousemove = function(event){self.canvas_mouse_move(event,self);};
-        if (move_marker_only==true){
-          self.markers[self.marker.active].pos_x=last_pos_x_markers[self.marker.active]+new_x;
-          self.update_background(self.pos_x,self.pos_y);
-          self.update_all_markers();
+        self.canvas.onmousemove = function (event) { self.canvas_mouse_move(event, self); };
+        if (move_marker_only == true) {
+          self.marker.items[self.marker.active].pos_x = last_pos_x_markers[self.marker.active] + new_x;
+          self.marker.items[self.marker.active].pos_y = last_pos_y_markers[self.marker.active] + new_y;
         } else {
-          self.pos_x=last_pos_x+new_x;
-          for (var i=0;i<self.markers.length;i++){
-            self.markers[i].pos_x=last_pos_x_markers[i]+new_x;
+          self.pos_x = last_pos_x + new_x;
+          self.pos_y = last_pos_y + new_y;
+          for (var i = 0; i < self.marker.length; i++) {
+            self.marker.items[i].pos_x = last_pos_x_markers[i] + new_x;
+            self.marker.items[i].pos_y = last_pos_y_markers[i] + new_y;
           }
-          self.update_background(self.pos_x,self.pos_y);
-          self.update_all_markers();
         }
-        move_marker_only=false;
+        self.repaint();
+        move_marker_only = false;
         self.canvas.onmouseup = null;
       }
-      self.canvas.onmouseout = function(event){
-        if (mouse_down==true){
+      self.canvas.onmouseout = function (event) {
+        if (mouse_down == true) {
           self.canvas.onmouseup(event);
         }
       }
@@ -293,28 +309,35 @@ class lcp_map_plan {
   }
 
 
+
+
   // при наведении мышкой на маркер - изменить курсор
-  canvas_mouse_move(event,self){
-    if (self.hover_marker_index(event,self)===false){
-      self.canvas.style.cursor='default';
+  canvas_mouse_move(event, self) {
+    if (self.hover_marker_index(event, self) === false) {
+      self.canvas.style.cursor = 'default';
     } else {
-      self.canvas.style.cursor='move';
+      self.canvas.style.cursor = 'move';
     }
   }
+
 
   // возвращает:
   // - индекс маркера, если мышка на маркере
   // - false, если мышка вне диапазона,
-  hover_marker_index(event,self){
-    var self=this;
+  hover_marker_index(event, self) {
+    var self = this;
     var mouse_x = event.offsetX;
-    var res=false;
-    for (var i=0;i<this.markers.length;i++){
-      if ((mouse_x+self.pos_x>=self.markers[i].pos_x*this.zoom+self.pos_x*this.zoom) && (mouse_x+self.pos_x<=(self.markers[i].pos_x*this.zoom+self.markers[i].img_width)+self.pos_x*this.zoom)){
-        res=i;
+    var mouse_y = event.offsetY;
+    var res = false;
+    for (var i = 0; i < this.marker.length; i++) {
+      if (
+      ((mouse_x + self.pos_x >= (self.marker.items[i].pos_x - self.marker.items[i].width / 2) + self.pos_x) && (mouse_x + self.pos_x <= (self.marker.items[i].pos_x + self.marker.items[i].width / 2) + self.pos_x))&&
+      ((mouse_y + self.pos_y >= (self.marker.items[i].pos_y - self.marker.items[i].height / 2) + self.pos_y) && (mouse_y + self.pos_y <= (self.marker.items[i].pos_y + self.marker.items[i].height / 2) + self.pos_y))
+      ){
+        res = i;
         break;
       } else {
-        res=false;
+        res = false;
       }
     }
     return res;
@@ -323,7 +346,11 @@ class lcp_map_plan {
 
 
 
-
+  // очистить весь фон
+  clear_all() {
+    var self = this;
+    self.ctx.clearRect(0, 0, self.canvas_width, self.canvas_height);
+  }
 
   // общее событие для всех прокруток мыши
   addOnWheel(elem, handler) {
@@ -339,10 +366,137 @@ class lcp_map_plan {
         elem.addEventListener("MozMousePixelScroll", handler);
       }
     } else { // IE8-
-      text.attachEvent("onmousewheel", handler);
+      elem.attachEvent("onmousewheel", handler);
     }
   }
-
 }
 
-const map_plan=new lcp_map_plan();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// -----------------------------------------------------------------------------------
+
+
+// // Создание маркеров
+//
+// // (type=circle,width=20,height=20):
+// {
+//   color:'#ff0000',
+// }
+//
+// // (type=circle,width=20,height=20):
+// {
+//   color:'#ff0000',
+//   width=20,
+//   height=20,
+// }
+//
+// // (type=circle,width=20,height=20):
+// {
+//   color:'#ff0000',
+//   position:[20,20],
+// }
+//
+// // (type=circle,width=20,height=20,color:'#ff0000'):
+// {
+//   position:[20,20],
+// }
+
+class lcp_marker {
+  constructor(parent, param) {
+    this.parent = parent;
+    param = (typeof param !== 'undefined') ? param : {};
+    this.type = (typeof param['type'] !== 'undefined') ? param['type'] : 'circle';
+    this.width = (typeof param['width'] !== 'undefined') ? param['width'] : '20';
+    this.height = (typeof param['height'] !== 'undefined') ? param['height'] : '20';
+    this.color = (typeof param['color'] !== 'undefined') ? param['color'] : '#ff0000';
+    this.pos_x_orig = (typeof param['position'] !== 'undefined') ? param['position'][0] : this.parent.zoom_coefficient_orig(this.parent.canvas_width / 2);
+    this.pos_y_orig = (typeof param['position'] !== 'undefined') ? param['position'][1] : this.parent.zoom_coefficient_orig(this.parent.canvas_height / 2);
+    console.log(this.pos_x_orig);
+  }
+
+  get pos_x() {
+    var self = this;
+    return self.parent.zoom_coefficient(self.pos_x_orig);
+  }
+
+  set pos_x(x) {
+    var self = this;
+    self.pos_x_orig = self.parent.zoom_coefficient_orig(x);
+  }
+
+  get pos_y() {
+    var self = this;
+    return self.parent.zoom_coefficient(self.pos_y_orig);
+  }
+
+  set pos_y(x) {
+    var self = this;
+    self.pos_y_orig = self.parent.zoom_coefficient_orig(x);
+  }
+
+  repaint_marker() {
+    var self = this;
+    if (self.type == 'circle') {
+      self.parent.ctx.beginPath();
+      self.parent.ctx.strokeStyle = self.color;
+      self.parent.ctx.lineWidth = '5';
+      self.parent.ctx.arc(self.pos_x, self.pos_y, self.width / 2, 0, 2 * Math.PI, false);
+      self.parent.ctx.stroke();
+      self.parent.ctx.closePath();
+      self.parent.ctx.beginPath();
+      self.parent.ctx.fillStyle = self.color;
+      self.parent.ctx.arc(self.pos_x, self.pos_y, 4, 0, 2 * Math.PI, false);
+      self.parent.ctx.fill();
+      self.parent.ctx.closePath();
+    }
+  }
+}
+
+
+
+
+
+
+// Общие свойства всех маркеров
+class lcp_list_marker {
+  constructor(parent) {
+    this.items = [];
+    this.parent = parent;
+    this.active = -1;
+  }
+  add(param) {
+    var self = this;
+    self.items[self.length] = new lcp_marker(self.parent, param);
+    self.repaint_all_marker();
+  }
+  get length() {
+    var self = this;
+    return self.items.length;
+  }
+  repaint_all_marker() {
+    var self = this;
+    for (var i = 0; i < self.length; i++) {
+      self.items[i].repaint_marker();
+    }
+  }
+}
+
+
+const map_plan = new lcp_map_plan();
