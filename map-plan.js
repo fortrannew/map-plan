@@ -49,6 +49,12 @@ class lcp_map_plan {
       var zoom = self.zoom;
       var mouse_x = e.offsetX;
       var mouse_y = e.offsetY;
+
+      // Рассчитать относительные координаты для мыши в текущем масштабе
+      let mouse_x_rel = (mouse_x - self.pos_x) / self.zoom;
+      let mouse_y_rel = (mouse_y - self.pos_y) / self.zoom;
+
+      // Изменение масштаба
       if (delta > 0) {
         zoom -= self.scale_step;
       } else {
@@ -60,9 +66,17 @@ class lcp_map_plan {
       if (zoom < 0.1) {
         zoom = 0.1;
       }
-      console.log(zoom);
+
+
+      // Обновить зум
       self.zoom = zoom;
+
+      // Рассчитать новое положение, чтобы курсор оставался в том же месте
+      self.pos_x = mouse_x - mouse_x_rel * self.zoom;
+      self.pos_y = mouse_y - mouse_y_rel * self.zoom;
+
       self.repaint();
+
       // отменим прокрутку
       e.preventDefault();
     });
