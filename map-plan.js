@@ -308,18 +308,30 @@ class lcp_map_plan {
 
 
 
-  // // получение центра карты исходя из оригинальных размеров с учетом коэффициента масштабирования
+  // получение центра карты исходя из оригинальных размеров без учета коэффициента масштабирования (по реальным неизменяющимся координатам)
   get center_x() {
     var self = this;
-    return self.canvas_width / 2 + self.pos_x;
+    return self.zoom_coefficient_orig(self.pos_x)* (-1) + self.zoom_coefficient_orig(self.canvas_width / 2);
+  }
+
+  get center_y() {
+    var self = this;
+    return self.zoom_coefficient_orig(self.pos_y)* (-1) + self.zoom_coefficient_orig(self.canvas_height / 2);
   }
 
   // установить центр карты исходя из оригинальных размеров без учета коэффициента масштабирования с визуальным перемещением
   set center_x(x) {
     var self = this;
-    self.pos_x = x - self.canvas_width / 2;
-    self.repaint_background();
-    self.marker.repaint_all_marker();
+    var res = x - self.zoom_coefficient_orig(self.canvas_width / 2);
+    self.pos_x = self.zoom_coefficient(res * (-1));
+    self.repaint();
+  }
+
+  set center_y(y) {
+    var self = this;
+    var res = y - self.zoom_coefficient_orig(self.canvas_height / 2);
+    self.pos_y = self.zoom_coefficient(res * (-1));
+    self.repaint();
   }
 
 
